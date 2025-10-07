@@ -1,8 +1,10 @@
 /*********************************************************************************************
+ * 
  * Objetivo: Arquivo responsável pela realização do CRUD de filme no Banco de Dados MySQL
- * Data: 01/10/2025
- * Autor: Eduardo Feitosa
+ * Data: 01/10/2025 D.C.
+ * Autor: Alex Henrique Da Cruz Gomes
  * Versão: 1.0
+ * 
  **********************************************************************************************/
 /**********************************************************************************************************
  * Dependencias do node para Banco de Dados Relacional
@@ -18,6 +20,12 @@
  * Instalação do Prisma
  * npm install prisma --save            -> Realiza a conexão com o Banco de Dados
  * npm install @prisma/client --save   -> Permite executar scripts SQL no Banco de Dados
+ * npx prisma init                      -> Inicializar o prisma no projeto(.env, prisma, etc)
+ * npx prisma migrate                   -> Permite sincronizar o Prisma com o BD, Modelar o BD
+ *                                         conforme as configurações do ORM.
+ *                                         CUIDADO: Esse comando faz um reset no BD
+ * npx prisma migrate reset             -> Realiza o reset do database
+ * npx prisma generate                  -> Realiza apenas o sincronismo com o BD 
  *  
  * 
  *      $queryRawUnsafe()   -> Permite executar apenas scripts SQL que retornam dados do Banco de Dados (SELECT), 
@@ -37,7 +45,7 @@
 
 
 //Import da biblioteca do PrismaClient
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('../../generated/prisma')
 
 //Cria um objeto do prisma client para manipular os scripts SQL
 const prisma = new PrismaClient()
