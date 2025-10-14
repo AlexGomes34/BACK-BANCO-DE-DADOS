@@ -32,9 +32,13 @@ const ERROR_REQUIRED_FIELDS = {status: false, status_code: 400, message: 'Não f
 
 const ERROR_INTERNAL_SERVER_CONTROLLER = {status: false, status_code: 500, message: 'Não foi possivel processar a requisição, devido a erros/problemas na camada de controle de dados .|.'}
 
+const ERROR_CONTENT_TYPE = {status: false, status_code: 415, message: 'Não foi possivél processar a requisição pois o tipo de conteudo enviado no BODY não é permitido. Deve-se utilizar apenas JSON na API .|.'}
 /************************************MENSAGENS DE SUCESSO DO PROJETO***************************************************** */
 
 const SUCCESS_REQUEST = {status: true, status_code: 200, message: 'requisição bem sucedida .|.'}
+
+const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'requisição bem sucedida, objeto criado com sucesso'
+}
 
 
 module.exports = {
@@ -43,5 +47,7 @@ module.exports = {
     ERROR_NOT_FOUND,
     ERROR_INTERNAL_SERVER_MODEL,
     ERROR_INTERNAL_SERVER_CONTROLLER,
-    ERROR_REQUIRED_FIELDS
+    ERROR_REQUIRED_FIELDS,
+    SUCCESS_CREATED_ITEM,
+    ERROR_CONTENT_TYPE
 }

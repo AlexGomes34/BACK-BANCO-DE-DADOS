@@ -10,7 +10,10 @@
 //Import das dependencias
 const express = require('express') 
 const cors = require('cors')
-const bodyParse = require('body-parser')
+const bodyParser = require('body-parser')
+
+//Cria um objeto especialista no formato JSON para receber os dados do BODY ()
+const bodyParserJson = bodyParser.json()
 
 //Porta
             const PORT = process.PORT || 8080
@@ -55,6 +58,23 @@ app.get('/v1/locadora/filmes/:id', cors(), async function(request, response) {
     response.json(filme)
     
 })
+
+//INSERE UM NOVO FILME NO BD
+app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function name(request, response) {
+    
+    //Recebe o objeto JSON pelo body da requisição
+    let dadosBody = request.body
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    //Chama a função da controller para inserir o filme, enviamos os dados do body e o content-type
+    let filme = await controllerFilme.inserirFilme(dadosBody, contentType)
+
+    response.status(filme.status_code)
+    response.json(filme)
+})
+
 
 app.listen(PORT, function(){
     console.log('API aguardando requisições')
