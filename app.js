@@ -60,7 +60,7 @@ app.get('/v1/locadora/filmes/:id', cors(), async function(request, response) {
 })
 
 //INSERE UM NOVO FILME NO BD
-app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function name(request, response) {
+app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function(request, response) {
     
     //Recebe o objeto JSON pelo body da requisição
     let dadosBody = request.body
@@ -73,6 +73,35 @@ app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function name(reque
 
     response.status(filme.status_code)
     response.json(filme)
+})
+
+app.put('/v1/locadora/filmes/:id', cors(), bodyParserJson, async function(request, response){
+    
+    //Recebe os dados do body
+    let dadosBody = request.body
+
+    //Recebe os dados do filme encaminhado pela url
+    let idFilme = request.params.id
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    let filme = await controllerFilme.atualizarFilme(dadosBody, idFilme, contentType)
+
+    response.status(filme.status_code)
+    response.json(filme)
+
+})
+
+app.delete('/v1/locadora/filmes/:id', cors(), async function(request, response){
+
+    let idFilme = request.params.id
+
+    let filme = await controllerFilme.excluirFilme(idFilme)
+
+    response.status(filme.status_code)
+    response.json(filme)
+
 })
 
 

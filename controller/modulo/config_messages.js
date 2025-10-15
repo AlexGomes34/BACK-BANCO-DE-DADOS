@@ -40,6 +40,10 @@ const SUCCESS_REQUEST = {status: true, status_code: 200, message: 'requisição 
 const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'requisição bem sucedida, objeto criado com sucesso'
 }
 
+const SUCCESS_UPDATED_ITEM = {status: true, status_code: 200, message: 'Requisição bem sucedida, objeto atualizado com sucesso .|.'}
+
+const SUCCESS_DELETE_ITEM = {status: true, status_code: 200, message: 'Requisição bem sucedida, objeto DELETADO com sucesso .|.'}
+
 
 module.exports = {
     SUCCESS_REQUEST,
@@ -49,5 +53,7 @@ module.exports = {
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_REQUIRED_FIELDS,
     SUCCESS_CREATED_ITEM,
-    ERROR_CONTENT_TYPE
+    ERROR_CONTENT_TYPE,
+    SUCCESS_UPDATED_ITEM,
+    SUCCESS_DELETE_ITEM
 }
