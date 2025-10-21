@@ -33,6 +33,8 @@ app.use((request, response, next)=>{
 //Import das controllers da API
 const controllerFilme = require('./controller/filme/controller_filme.js')
 
+const controllerGenero = require('./controller/genero/controller_genero.js')
+
 //Endpoint para CRUD de Filmes
 
 //Retorna a Lista de Filmes
@@ -75,6 +77,7 @@ app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function(request, r
     response.json(filme)
 })
 
+//Atualizar um filme existente no BD
 app.put('/v1/locadora/filmes/:id', cors(), bodyParserJson, async function(request, response){
     
     //Recebe os dados do body
@@ -93,6 +96,7 @@ app.put('/v1/locadora/filmes/:id', cors(), bodyParserJson, async function(reques
 
 })
 
+//Deleta um registro de filme do BD
 app.delete('/v1/locadora/filmes/:id', cors(), async function(request, response){
 
     let idFilme = request.params.id
@@ -104,6 +108,46 @@ app.delete('/v1/locadora/filmes/:id', cors(), async function(request, response){
 
 })
 
+//ENDPOINTS PARA O CRUD DE GENEROS
+
+//Retorna a Lista de Generos
+app.get('/v1/locadora/generos', cors(), async function(request, response){
+
+    //Chama a função da controller para retornar todos os generos
+    let genero = await controllerGenero.listarGeneros()
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
+//Retorna um Genero Filtrando pelo ID
+app.get('/v1/locadora/generos/:id', cors(), async function(request, response) {
+
+    //Recebe o ID enviado na requisição via parametro
+    let idGenero = request.params.id
+
+    //Chama a função da controller para retornar todos os filmes
+    let genero = await controllerGenero.buscarGeneroId(idGenero)
+
+    response.status(genero.status_code)
+    response.json(genero)
+    
+})
+
+//Insere um Novo Filme no BD
+app.post('/v1/locadora/generos', cors(), bodyParserJson, async function(request, response){
+
+    //Recebe o objeto JSON pelo body da requisição
+    let dadosBody = request.body
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    //Chama a função da controller para inserir o filme, enviando os dados do body e o content-type
+    let genero = await controllerGenero.inserirGenero(dadosBody, contentType)
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
 
 app.listen(PORT, function(){
     console.log('API aguardando requisições')
