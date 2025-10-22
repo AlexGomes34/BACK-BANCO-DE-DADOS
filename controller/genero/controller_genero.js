@@ -77,18 +77,16 @@ const buscarGeneroId = async function(id){
     }
 }
 
-//Insere um novo filme
+//Insere um novo genero
 const inserirGenero = async function(genero, contentType){
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+
             //Validação de campo obrigatório
-            if(id == '' || id == null || id == undefined || !isNaN(id) || id <= 0){
-                MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'Atributo [id] invalido .|.'
-                return MESSAGE.ERROR_REQUIRED_FIELDS //400
-            }else if(genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100){
+            if(genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100){
                 MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'Atributo [nome] invalido .|.'
                 return MESSAGE.ERROR_REQUIRED_FIELDS //400
             }else{
@@ -103,8 +101,8 @@ const inserirGenero = async function(genero, contentType){
 
                     if(lastIdGenero){
 
-                        //Adiciona no json de generos o id que foi gerado pelo BD
-                        genero.id = lastIdGenero
+                        //Adiciona no json de genero o id que foi gerado pelo BD
+                        genero.genero_id                    = lastIdGenero
 
                         MESSAGE.HEADER.status       = MESSAGE.SUCCESS_CREATED_ITEM.status
                         MESSAGE.HEADER.status_code  = MESSAGE.SUCCESS_CREATED_ITEM.status_code
@@ -112,11 +110,12 @@ const inserirGenero = async function(genero, contentType){
                         MESSAGE.HEADER.response     = genero
     
                         return MESSAGE.HEADER //201
+
                     }else{
                         return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
                     }
                 }else{
-                    return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+                    return MESSAGE.ERROR_NOT_FOUND //500
                 }
             }
         }else{
@@ -128,8 +127,92 @@ const inserirGenero = async function(genero, contentType){
     }
 
 }
+
+//Atualiza um genero no BD filtrando pelo ID
+const atualizarGenero = async function(genero, genero_id, contentType){
+
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    try {
+
+        //Validação do content-type
+        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+
+            //Validação de campo obrigatório
+            if(genero.nome == '' || genero.nome == null || genero.nome == undefined || genero.nome.length > 100){
+                MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'Atributo [nome] invalido .|.'
+                return MESSAGE.ERROR_REQUIRED_FIELDS //400
+            }else{
+
+                let validarId = await buscarGeneroId(genero_id)
+
+                //Verifica se o ID existe no BD, Caso exista teremos um 200
+                if(validarId.status_code == 200){
+
+                    genero.genero_id = parseInt(genero_id)
+
+                    //Chama a função do DAO que atuaiza o genero
+                    let result = await generoDAO.setUpdateGenres(genero)
+
+                    if(result){
+                        MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
+                        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
+                        MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
+                        MESSAGE.HEADER.response = genero
+
+                        return MESSAGE.HEADER //200
+                    }else{
+                        return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+                    }
+                }else{
+                    return validarId //Retorno da função de buscar o ID (400/404/500)
+                }
+            }
+        }else{
+            return MESSAGE.ERROR_CONTENT_TYPE
+        }
+        
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
+//Deleta um genero no BD filtrando pelo ID
+const excluirGenero = async function(genero_id){
+
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    try{
+
+        let validarId = await buscarGeneroId(genero_id)
+
+        //Verifica se o ID existe no BD, Caso exista teremos um 200
+        if(validarId.status_code == 200){
+
+            //Chama a função do DAO para deletar um genero
+            let result = await generoDAO.setDeleteGenres(genero_id)
+
+            if(result){
+                MESSAGE.HEADER.status       = MESSAGE.SUCCESS_DELETE_ITEM.status
+                MESSAGE.HEADER.status_code  = MESSAGE.SUCCESS_DELETE_ITEM.status_code
+                MESSAGE.HEADER.message      = MESSAGE.SUCCESS_DELETE_ITEM.message
+
+                return MESSAGE.HEADER //200
+            }else{
+                return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }else{
+            return validarId //Retorna a função de buscar o ID (400/404/500)
+        }
+
+    }catch(error){
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
 module.exports = {
     listarGeneros,
     buscarGeneroId,
-    inserirGenero
+    inserirGenero,
+    atualizarGenero,
+    excluirGenero
 }

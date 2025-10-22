@@ -1,7 +1,7 @@
 /*********************************************************************************************
  * 
- * Objetivo: Arquivo responsável pela realização do CRUD de genero no Banco de Dados MySQL
- * Data: 21/10/2025 D.C.
+ * Objetivo: Arquivo responsável pela realização do CRUD de classificação no Banco de Dados MySQL
+ * Data: 22/10/2025 D.C.
  * Autor: Alex Henrique Da Cruz Gomes
  * Versão: 1.0
  * 
@@ -49,12 +49,12 @@ const { PrismaClient } = require('../../generated/prisma')
 //Cria um objeto do prisma client para manipular os scripts SQL
 const prisma = new PrismaClient()
 
-//Retorna todos os generos do BD
-const getSelectAllGenres = async function(){
+//Retorna todas as classificações do BD
+const getSelectAllClassifications = async function(){
     try {
 
         //SCRIPT SQL
-        let sql = `select * from tbl_genero`
+        let sql = `SELECT * FROM tbl_classificacao`
 
         //Executa no BD o script SQL
         let result = await prisma.$queryRawUnsafe(sql)
@@ -71,16 +71,13 @@ const getSelectAllGenres = async function(){
     }
 }
 
-//Retorna um Genero Filtrando pelo ID do BD
-const getSelectByIdGenres = async function(id){
+//Retorna uma classificação do BD filtrando pelo ID
+const getSelectByIdClassifications = async function(id){
     try {
-        //Script SQL
-        let sql = `select * from tbl_genero where genero_id = ${id}`
-
-        //Executa no BD o script SQL
+        let sql =   `select * from tbl_classificacao WHERE classificacao_id = ${id}`
+        
         let result = await prisma.$queryRawUnsafe(sql)
 
-        //Validaçaõ para identificar se o retorno do banco é um array (vazio ou com dados)
         if(Array.isArray(result))
             return result
         else
@@ -90,99 +87,51 @@ const getSelectByIdGenres = async function(id){
     } catch (error) {
         return false
     }
-    
 }
 
-//Retorna o Ultimo Genero a ser Adicionado no BD
-const getSelectLastIdGenre = async function(){
-    try {
-
-        //Script SQL
-        let sql = `select genero_id from tbl_genero order by genero_id desc limit 1`
-
-        //Executa no BD o script SQL
-        let result = await prisma.$queryRawUnsafe(sql)
-
-        //Validaçaõ para identificar se o retorno do banco é um array (vazio ou com dados)
-        if(Array.isArray(result))
-            return Number(result[0].genero_id)
-        else
-            return false
-
-    } catch (error) {
-        return false
-    }
-    
-}
-
-//Insere um Genero no BD
-const setInsertGenres = async function(genero){
-    try {
-        let sql =   `
-                    INSERT INTO tbl_genero (nome)
-                    VALUES ('${genero.nome}');
-                    `
-
-        // $executeRawUnsafe() ->   Permite apenas executar scripts SQL que não tem retorno de dados (INSERT, UPDATE & DELETE)
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if(result)
-            return true
-        else
-            return false
-    } catch (error) {
-        return false
-    }
-}
-
-//Atualiza um genero existente no BD filtrando pelo ID
-const setUpdateGenres = async function(genero){
-    try {
-
-        let sql =   `
-                    UPDATE tbl_genero set
-                        nome = '${genero.nome}'
-                    WHERE genero_id = ${genero.genero_id}
-                    `
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if(result){
-            return true
-        }else{
-            false
-        }
-        
-    } catch (error) {
-        return false
-    }
-}
-
-//Deleta um genero existente no BD filtrando pelo ID
-const setDeleteGenres = async function(genero_id){
+//Retorna a ultima classificação a ser criada dentro do BD
+const getSelectLastIdClassification = async function(){
     try {
         
-        let sql =   `
-                    DELETE FROM tbl_genero WHERE genero_id = ${genero_id}
-                    `
+        let sql = `select classificacao_id from tbl_classificacao order by classificacao_id desc limit 1`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        if(result){
-            return true
+        if(Array.isArray(result)){
+            return Number(result[0].classificacao_id)
         }else{
             return false
         }
-
     } catch (error) {
         return false
     }
+} 
+
+//Insere uma nova classificação dentro do BD
+const setInsertClassifications = async function(classificacao){
+    try {
+        
+        let sql =   `
+                    INSERT INTO tbl_classificacao (nome, idade_minima)
+                    VALUES ('${classificacao.nome}', '${classificacao.idade_minima}')
+                    `
+
+        let result = await prisma.$executeRawUnsafe(sql)
+        console.log(result)
+        if(result){
+            return result
+        }else{
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+
+    }
 }
-module.exports ={
-    getSelectAllGenres,
-    getSelectByIdGenres,
-    getSelectLastIdGenre,
-    setInsertGenres,
-    setUpdateGenres,
-    setDeleteGenres
+module.exports = {
+    getSelectAllClassifications,
+    getSelectByIdClassifications,
+    getSelectLastIdClassification,
+    setInsertClassifications
 }

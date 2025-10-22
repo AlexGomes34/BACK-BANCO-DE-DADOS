@@ -35,6 +35,8 @@ const controllerFilme = require('./controller/filme/controller_filme.js')
 
 const controllerGenero = require('./controller/genero/controller_genero.js')
 
+const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
+
 //Endpoint para CRUD de Filmes
 
 //Retorna a Lista de Filmes
@@ -133,7 +135,7 @@ app.get('/v1/locadora/generos/:id', cors(), async function(request, response) {
     
 })
 
-//Insere um Novo Filme no BD
+//Insere um Novo Gênero no BD
 app.post('/v1/locadora/generos', cors(), bodyParserJson, async function(request, response){
 
     //Recebe o objeto JSON pelo body da requisição
@@ -149,6 +151,73 @@ app.post('/v1/locadora/generos', cors(), bodyParserJson, async function(request,
     response.json(genero)
 })
 
+//Atualiza um Gênero Existente no BD
+app.put('/v1/locadora/generos/:id', cors(), bodyParserJson, async function(request, response){
+
+    //Recebe os dados do body
+    let dadosBody = request.body
+
+    //Recebe os dados do genero encaminhado pela url
+    let idGenero = request.params.id
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    let genero = await controllerGenero.atualizarGenero(dadosBody, idGenero, contentType)
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
+//Deleta um Gênero do BD Filtrando pelo ID
+app.delete('/v1/locadora/generos/:id', cors(), async function(request,  response){
+
+    let idGenero = request.params.id
+
+    let genero = await controllerGenero.excluirGenero(idGenero)
+
+    response.status(genero.status_code)
+    response.json(genero)
+})
+
+//ENDPOINTS PARA O CRUD DE CLASSIFICAÇÕES
+
+//Retorna uma lista de classificações do BD
+app.get('/v1/locadora/classificacoes', cors(), async function(request, response){
+
+    //Chama a função que retorna a lista de classificações
+    let classificacao = await controllerClassificacao.listarClassificacoes()
+
+    response.status(classificacao.status_code)
+    response.json(classificacao)
+    
+})
+
+//Retorna uma classificação do BD filtrando pelo ID
+app.get('/v1/locadora/classificacoes/:id', cors(), async function(request, response){
+
+    let idClassificacao = request.params.id
+
+    let classificacao = await controllerClassificacao.buscarClassificacaoId(idClassificacao)
+
+    response.status(classificacao.status_code)
+    response.json(classificacao)
+    
+})
+
+//Insere uma nova classificação dentro do BD
+app.post('/v1/locadora/classificacoes', cors(), bodyParserJson, async function(request, response){
+
+    let dadosBody = request.body
+
+    let contentType = request.headers['content-type']
+
+    let classificacao = await controllerClassificacao.InserirClassificacao(dadosBody, contentType)
+
+    response.status(classificacao.status_code)
+    response.json(classificacao)
+    
+})
 app.listen(PORT, function(){
     console.log('API aguardando requisições')
 })
