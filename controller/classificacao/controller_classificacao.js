@@ -78,7 +78,7 @@ const buscarClassificacaoId = async function(id) {
 }
 
 //Insere uma nova classificação no BD
-const InserirClassificacao = async function(classificacao, contentType) {
+const inserirClassificacao = async function(classificacao, contentType) {
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
@@ -100,7 +100,6 @@ const InserirClassificacao = async function(classificacao, contentType) {
                 if(result){
 
                     let lastIdClassificacao = await classificacaoDAO.getSelectLastIdClassification()
-
                     if(lastIdClassificacao){
 
                         classificacao.classificacao_id = lastIdClassificacao
@@ -126,8 +125,92 @@ const InserirClassificacao = async function(classificacao, contentType) {
     }
 }
 
+//Atualiza uma classificação dentro do BD
+const atualizarClassificacao = async function(classificacao, classificacao_id, contentType){
+
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    try {
+
+        //Validação do content-type
+        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+
+            //Validação de campo obrigatório
+            if(classificacao.nome == '' || classificacao.nome == null || classificacao.nome == undefined || classificacao.nome.length > 100){
+                MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'Atributo [nome] invalido .|.'
+                return MESSAGE.ERROR_REQUIRED_FIELDS //400
+            }else if(classificacao.idade_minima == '' || classificacao.idade_minima == null || classificacao.idade_minima == undefined || isNaN(classificacao.idade_minima) || classificacao.idade_minima.length <=0){
+                MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = 'Atributo [idade_minima] invalido .|.'
+                console.log(classificacao.idade_minima)
+                return MESSAGE.ERROR_REQUIRED_FIELDS //400
+            }else{
+
+                let validarId = await buscarClassificacaoId(classificacao_id)
+
+                if(validarId.status_code = 200){
+
+                    classificacao.classificacao_id = parseInt(classificacao_id)
+
+                    let result = await classificacaoDAO.setUpdateClassifications(classificacao)
+
+                    if(result){
+                        MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
+                        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
+                        MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
+                        MESSAGE.HEADER.response = classificacao
+
+                        return MESSAGE.HEADER //200
+                    }else{
+                        return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+                    }
+                }else{
+                    return validarId //Retorno da função de validar o ID (400/404/500)
+                }
+
+            }
+        }else{
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+        }
+        
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
+//Deleta uma classificação dentro do BD
+const excluirClassificacao = async function(classificacao_id){
+
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    try {
+        
+        let validarId = await buscarClassificacaoId(classificacao_id)
+
+        if(validarId.status_code = 200){
+
+            let result = await classificacaoDAO.setDeleteClassifications(classificacao_id)
+
+            if(result){
+                MESSAGE.HEADER.status = MESSAGE.SUCCESS_DELETE_ITEM.status
+                MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_DELETE_ITEM.status_code
+                MESSAGE.HEADER.message = MESSAGE.SUCCESS_DELETE_ITEM.message
+
+                return MESSAGE.HEADER //200
+            }else{
+                return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }else{
+            return validarId //Retorno da função de buscarFilmeID (400/404/500)
+        }
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
+
+}
 module.exports = {
     listarClassificacoes,
     buscarClassificacaoId,
-    InserirClassificacao
+    inserirClassificacao,
+    atualizarClassificacao,
+    excluirClassificacao
 }

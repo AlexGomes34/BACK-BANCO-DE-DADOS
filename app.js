@@ -37,6 +37,8 @@ const controllerGenero = require('./controller/genero/controller_genero.js')
 
 const controllerClassificacao = require('./controller/classificacao/controller_classificacao.js')
 
+const controllerAtor = require('./controller/ator/controller_ator.js')
+
 //Endpoint para CRUD de Filmes
 
 //Retorna a Lista de Filmes
@@ -212,10 +214,56 @@ app.post('/v1/locadora/classificacoes', cors(), bodyParserJson, async function(r
 
     let contentType = request.headers['content-type']
 
-    let classificacao = await controllerClassificacao.InserirClassificacao(dadosBody, contentType)
+    let classificacao = await controllerClassificacao.inserirClassificacao(dadosBody, contentType)
 
     response.status(classificacao.status_code)
     response.json(classificacao)
+    
+})
+//Atualiza uma classificação dentro do BD
+app.put('/v1/locadora/classificacoes/:id', cors(), bodyParserJson, async function(request, response){
+
+    let dadosBody = request.body
+
+    let idClassificacao = request.params.id
+
+    let contentType = request.headers['content-type']
+
+    let classificacao = await controllerClassificacao.atualizarClassificacao(dadosBody, idClassificacao, contentType)
+
+    response.status(classificacao.status_code)
+    response.json(classificacao)
+})
+app.delete('/v1/locadora/classificacoes/:id', cors(), async function(request, response){
+
+    let idClassificacao = request.params.id
+
+    let classificacao = await controllerClassificacao.excluirClassificacao(idClassificacao)
+
+    response.status(classificacao.status_code)
+    response.json(classificacao)
+})
+
+//ENDPOINTS PARA O CRUD DE ATORES
+
+//Retorna uma lista de atores do BD
+app.get('/v1/locadora/atores', cors(), async function(request, response){
+
+    let ator = await controllerAtor.listarAtores()
+
+    response.status(ator.status_code)
+    response.json(ator)
+    
+})
+//Retorna um ator do BD filtrando pelo ID
+app.get('/v1/locadora/atores/:id', cors(), async function(request, response){
+
+    let idAtor = request.params.id
+
+    let ator = await controllerAtor.buscarAtorId(idAtor)
+
+    response.status(ator.status_code)
+    response.json(ator)
     
 })
 app.listen(PORT, function(){

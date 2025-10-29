@@ -1,7 +1,7 @@
 /*********************************************************************************************
  * 
- * Objetivo: Arquivo responsável pela realização do CRUD de classificação no Banco de Dados MySQL
- * Data: 22/10/2025 D.C.
+ * Objetivo: Arquivo responsável pela realização do CRUD de atores no Banco de Dados MySQL
+ * Data: 29/10/2025 D.C.
  * Autor: Alex Henrique Da Cruz Gomes
  * Versão: 1.0
  * 
@@ -49,73 +49,70 @@ const { PrismaClient } = require('../../generated/prisma')
 //Cria um objeto do prisma client para manipular os scripts SQL
 const prisma = new PrismaClient()
 
-//Retorna todas as classificações do BD
-const getSelectAllClassifications = async function(){
-    try {
+//Retorna todos os atores do BD
+const getSelectAllActors = async function(){
 
-        //SCRIPT SQL
-        let sql = `SELECT * FROM tbl_classificacao`
-
-        //Executa no BD o script SQL
-        let result = await prisma.$queryRawUnsafe(sql)
-
-        //Validaçaõ para identificar se o retorno do banco é um array (vazio ou com dados) 
-        if (Array.isArray(result)) {
-            return result
-        } else {
-            return false
-        }
-        
-    } catch (error) {
-        return false
-    }
-}
-
-//Retorna uma classificação do BD filtrando pelo ID
-const getSelectByIdClassifications = async function(id){
-    try {
-        let sql =   `select * from tbl_classificacao WHERE classificacao_id = ${id}`
-        
-        let result = await prisma.$queryRawUnsafe(sql)
-
-        if(Array.isArray(result))
-            return result
-        else
-            return false
-        
-
-    } catch (error) {
-        return false
-    }
-}
-
-//Retorna a ultima classificação a ser criada dentro do BD
-const getSelectLastIdClassification = async function(){
     try {
         
-        let sql = `select classificacao_id from tbl_classificacao order by classificacao_id desc limit 1`
+        let sql = `SELECT * FROM tbl_ator`
 
         let result = await prisma.$queryRawUnsafe(sql)
 
         if(Array.isArray(result)){
-            return Number(result[0].classificacao_id)
+            return result
         }else{
             return false
         }
     } catch (error) {
         return false
     }
-} 
+    
+}
 
-//Insere uma nova classificação dentro do BD
-const setInsertClassifications = async function(classificacao){
+//Retorna um ator do BD filtrando pelo ID
+const getSelectByIdActors = async function(ator_id){
+    try {
+        let sql = `select * from tbl_ator WHERE ator_id = ${ator_id}`
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(Array.isArray(result))
+            return result
+        else
+            return false
+    } catch (error) {
+        return false
+    }
+}
+
+//Retorna a ultima classificação a ser criada dentro do BD
+const getSelectLastIdActors = async function(){
+    try{
+
+        let sql = `select ator_id from tbl_ator order by ator_id desc limit 1`
+
+        let result = prisma.$queryRawUnsafe(sql)
+
+        if(Array.isArray(result)){
+            return Number(result[0].ator_id)
+        }else{
+            return false
+        }
+
+    }catch(error){
+        return false
+    }
+}
+
+//Insere um ator novo no BD
+const setInsertActors = async function(ator){
     try {
         
         let sql =   `
-                    INSERT INTO tbl_classificacao (nome, idade_minima)
-                    VALUES ('${classificacao.nome}', '${classificacao.idade_minima}');
+                    INSERT INTO tbl_ator (nome, genero, data_nascimento, data_morte, img_ator)
+                    VALUES ('${ator.nome}', '${ator.genero}', '${ator.data_nascimento}', '${ator.data_morte}', '${ator.img_ator}');
                     `
-
+        
         let result = await prisma.$executeRawUnsafe(sql)
         if(result)
             return result
@@ -125,54 +122,9 @@ const setInsertClassifications = async function(classificacao){
         return false
     }
 }
-//Atualiza uma classificação existente no BD
-const setUpdateClassifications = async function(classificacao){
-    try {
-
-        let sql =   `
-                    UPDATE tbl_classificacao 
-                    set nome = '${classificacao.nome}',
-                        idade_minima = '${classificacao.idade_minima}'
-                    WHERE classificacao_id = ${classificacao.classificacao_id}
-                    `
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if(result){
-
-            return true
-        }else{
-            false
-        }
-    } catch (error) {
-        console.log(error)
-        return false
-    }
-}
-//Deleta uma classificação exitente dentro do BD
-const setDeleteClassifications = async function(classificacao_id){
-    try{
-        let sql =   `
-                    DELETE FROM tbl_classificacao WHERE classificacao_id = ${classificacao_id}
-                    `
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if(result){
-            return true
-        }else{
-            return false
-        }
-    
-    }catch(error){
-        return false
-    }
-}
 module.exports = {
-    getSelectAllClassifications,
-    getSelectByIdClassifications,
-    getSelectLastIdClassification,
-    setInsertClassifications,
-    setUpdateClassifications,
-    setDeleteClassifications
+    getSelectAllActors,
+    getSelectByIdActors,
+    getSelectLastIdActors,
+    setInsertActors
 }
