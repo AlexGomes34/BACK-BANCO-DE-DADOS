@@ -76,6 +76,20 @@ const buscarAtorId = async function(ator_id){
 //Insere um novo ator dentro do BD
 const inserirAtor = async function(classificacao, contentType){
     
+    MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    try {
+        
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
+//Validação dos dados de cadastro do ator
+const validarDadosAtor = async function(ator){
+
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+    
 }
 module.exports = {
     listarAtores,
