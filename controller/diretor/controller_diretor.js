@@ -7,19 +7,19 @@
 * 
 **********************************************************************************************/
 
-const atorDAO = require('../../model/dao/ator')
+const diretorDAO = require('../../model/dao/diretor.js')
 
 const MESSAGE_DEFAULT = require('../../controller/modulo/config_messages')
 const {json} = require('body-parser')
 
-//Retorna a lista dos atores dentro do BD
-const listarAtores = async function(){
+//Retorna a lista dos diretores dentro do BD
+const listarDiretores = async function(){
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
         
-        let result = await atorDAO.getSelectAllActors()
+        let result = await diretorDAO.getSelectAllDirectors()
 
         if(result){
             if(result.length > 0){
@@ -39,22 +39,22 @@ const listarAtores = async function(){
     }
 }
 
-//Retorna um ator do BD filtrando pelo ID
-const buscarAtorId = async function(ator_id){
+//Retorna um diretor do BD filtrando ID
+const buscarDiretorId = async function(diretor_id){
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     try {
         
-        if(ator_id != '' && ator_id != null && ator_id != undefined && ator_id && !isNaN(ator_id) && ator_id > 0){
+        if(diretor_id != '' && diretor_id != null && diretor_id != undefined && diretor_id && !isNaN(diretor_id) && diretor_id > 0){
 
-            let result = await atorDAO.getSelectByIdActors(parseInt(ator_id))
+            let result = await diretorDAO.getSelectByIdDirectors(parseInt(diretor_id))
 
             if(result){
                 if(result.length > 0){
                     MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                     MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-                    MESSAGE.HEADER.response.actors = result
+                    MESSAGE.HEADER.response.directors = result
 
                     return MESSAGE.HEADER //200
                 }else{
@@ -73,8 +73,41 @@ const buscarAtorId = async function(ator_id){
 
 }
 
+//Validação dos dados de cadastro do ator
+const validarDadosDiretor = function(diretor){
+
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    if(diretor.nome == '' || diretor.nome == null || diretor.nome == undefined || diretor.nome.length > 100){
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [nome] invalido .|.`
+        return MESSAGE.ERROR_REQUIRED_FIELDS //400
+
+    }else if(diretor.genero == '' || diretor.genero == null || diretor.genero == undefined || diretor.genero.length > 100){
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [genero] invalido .|.`
+        return MESSAGE.ERROR_REQUIRED_FIELDS //400
+
+    }else if(diretor.data_nascimento == '' || diretor.data_nascimento == null || diretor.data_nascimento == undefined || diretor.data_nascimento.length != 10){
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [data_nascimento] invalido`
+        return MESSAGE.ERROR_REQUIRED_FIELDS //400
+
+    }else if(diretor.img_diretor == ''|| diretor.img_diretor == undefined || diretor.img_diretor.length > 200){
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [img] invalido`
+        return MESSAGE.ERROR_REQUIRED_FIELDS //400
+        
+    }else if(diretor.data_morte == null){
+        return false
+    
+    }else if(diretor.data_morte == '' || diretor.data_morte == undefined || diretor.data_morte.length != 10){
+        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [data_morte] invalido`
+        return MESSAGE.ERROR_REQUIRED_FIELDS //400
+
+    }else{
+        return false
+    }
+}
+
 //Insere um novo ator dentro do BD
-const inserirAtor = async function(ator, contentType){
+const inserirDiretor = async function(diretor, contentType){
     
     MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
@@ -82,22 +115,22 @@ const inserirAtor = async function(ator, contentType){
         
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            let validarDados = await validarDadosAtor(ator)
+            let validarDados = await validarDadosDiretor(diretor)
 
             if(!validarDados){
 
-                let result = await atorDAO.setInsertActors(ator)
+                let result = await diretorDAO.setInsertDirectors(diretor)
 
                 if(result){
 
-                    lastIdAtor = await atorDAO.getSelectLastIdActors()
+                    lastIdDiretor = await diretorDAO.getSelectLasIdDirectors()
 
-                    if(lastIdAtor){
-                        ator.ator_id                    = lastIdAtor
+                    if(lastIdDiretor){
+                        diretor.diretor_id                    = lastIdDiretor
                         MESSAGE.HEADER.status       = MESSAGE.SUCCESS_CREATED_ITEM.status
                         MESSAGE.HEADER.status_code  = MESSAGE.SUCCESS_CREATED_ITEM.status_code
                         MESSAGE.HEADER.message      = MESSAGE.SUCCESS_CREATED_ITEM.message
-                        MESSAGE.HEADER.response     = ator
+                        MESSAGE.HEADER.response     = diretor
     
                         return MESSAGE.HEADER //201
                     }else{
@@ -117,8 +150,8 @@ const inserirAtor = async function(ator, contentType){
     }
 }
 
-//Atualizar um ator filtrando pelo ID
-const atualizarAtor = async function(ator, id, contentType){
+//Atualizar um diretor do BD filtrando pelo ID
+const atualizarDiretor = async function(diretor, id, contentType){
 
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
@@ -128,26 +161,26 @@ const atualizarAtor = async function(ator, id, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Chama a função de validação de dados de cadastro
-            let validarDados = await validarDadosAtor(ator)
+            let validarDados = await validarDadosDiretor(diretor)
 
             if(!validarDados){
 
-            let validarId = await buscarAtorId(id)
+            let validarId = await buscarDiretorId(id)
 
             //Verifica se o ID existe no DB, caso exista teremos um 200
             if(validarId.status_code == 200){
 
                 //Adicionando o ID no JSON com os dados do ator
-                ator.id = parseInt(id)
+                diretor.id = parseInt(id)
 
                 //Chama a função do DAO para atualizar um ator
-                let result = await atorDAO.setUpdateActors(ator)
+                let result = await diretorDAO.setUpdateDirectors(diretor)
 
                 if(result){
                     MESSAGE.HEADER.status       = MESSAGE.SUCCESS_UPDATED_ITEM.status
                     MESSAGE.HEADER.status_code  = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
                     MESSAGE.HEADER.message      = MESSAGE.SUCCESS_UPDATED_ITEM.message
-                    MESSAGE.HEADER.response     = ator
+                    MESSAGE.HEADER.response     = diretor
 
                     return MESSAGE.HEADER //200
                 }else{
@@ -167,20 +200,20 @@ const atualizarAtor = async function(ator, id, contentType){
     }
 }
 
-//Apaga um ator filtrando pelo ID
-const excluirAtor = async function(ator_id){
+//Exclui um diretor existente no BD filtrando pelo ID
+const excluirDiretor = async function(diretor_id){
 
         let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
     
         try {
     
-                let validarId = await buscarAtorId(ator_id)
+                let validarId = await buscarDiretorId(diretor_id)
     
                 //Verifica se o ID existe no DB, caso exista teremos um 200
                 if(validarId.status_code == 200){
     
                     //Chama a função do DAO para delete um ator
-                    let result = await atorDAO.setDeleteActors(ator_id)
+                    let result = await diretorDAO.setDeleteDirectors(diretor_id)
     
                     if(result){
                         MESSAGE.HEADER.status       = MESSAGE.SUCCESS_DELETE_ITEM.status
@@ -199,45 +232,11 @@ const excluirAtor = async function(ator_id){
         }
 }
 
-//Validação dos dados de cadastro do ator
-const validarDadosAtor = function(ator){
-
-    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
-
-    if(ator.nome == '' || ator.nome == null || ator.nome == undefined || ator.nome.length > 100){
-        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [nome] invalido .|.`
-        return MESSAGE.ERROR_REQUIRED_FIELDS //400
-
-    }else if(ator.genero == '' || ator.genero == null || ator.genero == undefined || ator.genero.length > 100){
-        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [genero] invalido .|.`
-        return MESSAGE.ERROR_REQUIRED_FIELDS //400
-
-    }else if(ator.data_nascimento == '' || ator.data_nascimento == null || ator.data_nascimento == undefined || ator.data_nascimento.length != 10){
-        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [data_nascimento] invalido`
-        return MESSAGE.ERROR_REQUIRED_FIELDS //400
-
-    }else if(ator.img_ator == ''|| ator.img_ator == undefined || ator.img_ator.length > 200){
-        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [img] invalido`
-        return MESSAGE.ERROR_REQUIRED_FIELDS //400
-        
-    }else if(ator.data_morte == null){
-        return false
-    
-    }else if(ator.data_morte == '' || ator.data_morte == undefined || ator.data_morte.length != 10){
-        MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [data_morte] invalido`
-        return MESSAGE.ERROR_REQUIRED_FIELDS //400
-
-    }else{
-        return false
-    }
-}
-
-
 module.exports = {
-    listarAtores,
-    buscarAtorId,
-    validarDadosAtor,
-    inserirAtor,
-    atualizarAtor,
-    excluirAtor
+    listarDiretores,
+    buscarDiretorId,
+    validarDadosDiretor,
+    inserirDiretor,
+    atualizarDiretor,
+    excluirDiretor
 }
