@@ -177,8 +177,6 @@ const atualizarFilme = async function(filme, id, contentType){
     }
 }
 
-
-
 //Apaga um filme filtrando pelo ID
 const excluirFilme = async function(id){
 

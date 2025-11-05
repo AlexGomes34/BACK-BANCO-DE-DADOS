@@ -50,7 +50,6 @@ app.get('/v1/locadora/filmes', cors(), async function(request, response) {
     response.json(filme)
     
 })
-
 //Retorna um filme filtrado pelo ID
 app.get('/v1/locadora/filmes/:id', cors(), async function(request, response) {
 
@@ -64,7 +63,6 @@ app.get('/v1/locadora/filmes/:id', cors(), async function(request, response) {
     response.json(filme)
     
 })
-
 //INSERE UM NOVO FILME NO BD
 app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function(request, response) {
     
@@ -80,7 +78,6 @@ app.post('/v1/locadora/filmes', cors(), bodyParserJson,async function(request, r
     response.status(filme.status_code)
     response.json(filme)
 })
-
 //Atualizar um filme existente no BD
 app.put('/v1/locadora/filmes/:id', cors(), bodyParserJson, async function(request, response){
     
@@ -99,7 +96,6 @@ app.put('/v1/locadora/filmes/:id', cors(), bodyParserJson, async function(reques
     response.json(filme)
 
 })
-
 //Deleta um registro de filme do BD
 app.delete('/v1/locadora/filmes/:id', cors(), async function(request, response){
 
@@ -122,7 +118,6 @@ app.get('/v1/locadora/generos', cors(), async function(request, response){
     response.status(genero.status_code)
     response.json(genero)
 })
-
 //Retorna um Genero Filtrando pelo ID
 app.get('/v1/locadora/generos/:id', cors(), async function(request, response) {
 
@@ -136,7 +131,6 @@ app.get('/v1/locadora/generos/:id', cors(), async function(request, response) {
     response.json(genero)
     
 })
-
 //Insere um Novo Gênero no BD
 app.post('/v1/locadora/generos', cors(), bodyParserJson, async function(request, response){
 
@@ -152,7 +146,6 @@ app.post('/v1/locadora/generos', cors(), bodyParserJson, async function(request,
     response.status(genero.status_code)
     response.json(genero)
 })
-
 //Atualiza um Gênero Existente no BD
 app.put('/v1/locadora/generos/:id', cors(), bodyParserJson, async function(request, response){
 
@@ -170,7 +163,6 @@ app.put('/v1/locadora/generos/:id', cors(), bodyParserJson, async function(reque
     response.status(genero.status_code)
     response.json(genero)
 })
-
 //Deleta um Gênero do BD Filtrando pelo ID
 app.delete('/v1/locadora/generos/:id', cors(), async function(request,  response){
 
@@ -194,7 +186,6 @@ app.get('/v1/locadora/classificacoes', cors(), async function(request, response)
     response.json(classificacao)
     
 })
-
 //Retorna uma classificação do BD filtrando pelo ID
 app.get('/v1/locadora/classificacoes/:id', cors(), async function(request, response){
 
@@ -206,7 +197,6 @@ app.get('/v1/locadora/classificacoes/:id', cors(), async function(request, respo
     response.json(classificacao)
     
 })
-
 //Insere uma nova classificação dentro do BD
 app.post('/v1/locadora/classificacoes', cors(), bodyParserJson, async function(request, response){
 
@@ -266,6 +256,51 @@ app.get('/v1/locadora/atores/:id', cors(), async function(request, response){
     response.json(ator)
     
 })
+//Insere um novo ator dentro do BD
+app.post('/v1/locadora/atores', cors(), bodyParserJson,async function(request, response) {
+    
+    //Recebe o objeto JSON pelo body da requisição
+    let dadosBody = request.body
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    //Chama a função da controller para inserir o filme, enviamos os dados do body e o content-type
+    let ator = await controllerAtor.inserirAtor(dadosBody, contentType)
+
+    response.status(ator.status_code)
+    response.json(ator)
+})
+//Atualiza um ator dentro do BD
+app.put('/v1/locadora/atores/:id', cors(), bodyParserJson, async function(request, response){
+    
+    //Recebe os dados do body
+    let dadosBody = request.body
+
+    //Recebe os dados do ator encaminhado pela url
+    let idAtor = request.params.id
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    let ator = await controllerFilme.atualizarFilme(dadosBody, idAtor, contentType)
+
+    response.status(ator.status_code)
+    response.json(ator)
+
+})
+//Deleta um registro de um ator do BD
+app.delete('/v1/locadora/atores/:id', cors(), async function(request, response){
+
+    let idAtor = request.params.id
+
+    let ator = await controllerAtor.excluirAtor(idAtor)
+
+    response.status(ator.status_code)
+    response.json(ator)
+
+})
+
 app.listen(PORT, function(){
     console.log('API aguardando requisições')
 })

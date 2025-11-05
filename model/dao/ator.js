@@ -122,9 +122,56 @@ const setInsertActors = async function(ator){
         return false
     }
 }
+
+//Atualiza um ator que exista dentro do BD filtrando pelo ID
+const setUpdateActors = async function(ator){
+    try {
+        let sql =   `
+                    UPDATE tbl_ator set 
+                        nome            = '${ator.nome}',
+                        genero          = '${ator.genero}',
+                        data_nascimento = '${ator.data_nascimento}',
+                        data_morte      = '${ator.data_morte}',
+                        img_ator         = '${ator.img_ator}'
+                    where id = ${ator.id}
+                    `
+
+        // $executeRawUnsafe() ->   Permite apenas executar scripts SQL que não tem retorno de dados (INSERT, UPDATE & DELETE)
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        if(result)
+            return true
+        else
+            return false
+    } catch (error) {
+        return false
+    }
+}
+
+//Deleta um ator existente no BD filtrando pelo ID
+const setDeleteActors = async function(id){
+    try {
+        let sql =   `
+                    DELETE FROM tbl_ator WHERE ator_id = ${id}
+                    `
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+
+    if(result)
+            return true
+        else
+            return false
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     getSelectAllActors,
     getSelectByIdActors,
     getSelectLastIdActors,
-    setInsertActors
+    setInsertActors,
+    setUpdateActors,
+    setDeleteActors
 }
