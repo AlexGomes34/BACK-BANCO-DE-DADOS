@@ -33,6 +33,8 @@ const ERROR_REQUIRED_FIELDS = {status: false, status_code: 400, message: 'Não f
 const ERROR_INTERNAL_SERVER_CONTROLLER = {status: false, status_code: 500, message: 'Não foi possivel processar a requisição, devido a erros/problemas na camada de controle de dados .|.'}
 
 const ERROR_CONTENT_TYPE = {status: false, status_code: 415, message: 'Não foi possivél processar a requisição pois o tipo de conteudo enviado no BODY não é permitido. Deve-se utilizar apenas JSON na API .|.'}
+
+const ERROR_RELATION_TABLE = {status: false, status_code: 200, message: 'A requisição, foi bem sucedida, na criação do item principal, porém, ouveram problemas na tabela de relação .|.'}
 /************************************MENSAGENS DE SUCESSO DO PROJETO***************************************************** */
 
 const SUCCESS_REQUEST = {status: true, status_code: 200, message: 'requisição bem sucedida .|.'}
@@ -55,5 +57,6 @@ module.exports = {
     SUCCESS_CREATED_ITEM,
     ERROR_CONTENT_TYPE,
     SUCCESS_UPDATED_ITEM,
-    SUCCESS_DELETE_ITEM
+    SUCCESS_DELETE_ITEM,
+    ERROR_RELATION_TABLE
 }

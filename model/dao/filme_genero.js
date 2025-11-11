@@ -62,9 +62,9 @@ const getSelectByIdFilmGenre = async function(id){
 const getSelectGenresByIdFilm = async function(idFilme){
     try {
         //Script SQL
-        let sql = `select tbl_genero.id, tbl_genero.nome from tbl_filme
+        let sql = `select tbl_genero.genero_id, tbl_genero.nome from tbl_filme
          inner join tbl_filme_genero on tbl_filme.id = tbl_filme_genero.id_filme 
-         inner join tbl_genero on tbl_genero.id = tbl_filme_genero.id_genero
+         inner join tbl_genero on tbl_genero.genero_id = tbl_filme_genero.id_genero
         where tbl_filme.id = ${idFilme}`
 
         //Executa no BD o script SQL

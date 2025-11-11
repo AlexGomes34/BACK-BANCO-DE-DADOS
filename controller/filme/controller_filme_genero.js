@@ -88,6 +88,7 @@ const listarGenerosIdFilme = async function(idFilme){
 
             //Chama a função para filtrar pelo ID
             let result = await filmeGeneroDAO.getSelectGenresByIdFilm(parseInt(idFilme))
+            console.log(result)
 
             if(result){
                 if(result.length > 0){
