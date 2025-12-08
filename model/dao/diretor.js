@@ -72,7 +72,7 @@ const getSelectAllDirectors = async function(){
 //Retorna um diretor do BD baseando-se no ID
 const getSelectByIdDirectors = async function(diretor_id){
     try {
-        let sql = `select * from tbl_ator WHERE ator_id = ${diretor_id}`
+        let sql = `select * from tbl_ator WHERE diretor_id = ${diretor_id}`
 
         let result = await prisma.$queryRawUnsafe(sql)
 
