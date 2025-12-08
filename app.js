@@ -40,6 +40,12 @@ const atorRoutes = require('./routes/atorRoutes.js')
 
 const diretorRoutes = require('./routes/diretorRoutes.js')
 
+const filme_atorRoutes = require('./routes/filme_atorRoutes.js')
+
+const filme_diretorRoutes = require('./routes/filme_diretorRoutes.js')
+
+const filme_generoRoutes = require('./routes/filme_generoRoutes.js')
+
 //Configurando as rotas de filme
 app.use('/v1/locadora/filmes', filmeRoutes)
 
@@ -54,6 +60,15 @@ app.use('/v1/locadora/atores', atorRoutes)
 
 //Configurando as rotas de diretor
 app.use('/v1/locadora/diretores', diretorRoutes)
+
+//Configurando as rotas de filmeAtor
+app.use('/v1/locadora/filmes-atores', filme_atorRoutes)
+
+//Configurando as rotas de filmeDiretor
+app.use('/v1/locadora/filmes-diretores', filme_diretorRoutes)
+
+//Configurando as rotas de filmeGenero
+app.use('/v1/locadora/filmes-generos', filme_generoRoutes)
 
 app.listen(PORT, function(){
     console.log('API aguardando requisições')
