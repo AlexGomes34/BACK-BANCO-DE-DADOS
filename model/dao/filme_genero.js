@@ -91,19 +91,14 @@ const getSelectFilmsByIdGenre = async function(idGenero){
         // Assumindo que você importou o Prisma (ex: import { Prisma } from '@prisma/client')
         const { Prisma } = require('@prisma/client'); // Inclua se necessário
 
-        let result = await prisma.$queryRaw(Prisma.sql`
-            SELECT 
-                tbl_filme.id, 
-                tbl_filme.nome 
-            FROM 
-                tbl_filme
-            INNER JOIN 
-                tbl_filme_genero ON tbl_filme.id = tbl_filme_genero.id_filme 
-            INNER JOIN 
-                tbl_genero ON tbl_genero.id = tbl_filme_genero.id_genero
-            WHERE 
-                tbl_genero.id = ${idGenero}
-        `);
+        let sql = 
+        `
+        select tbl_filme.id, tbl_filme.nome from tbl_filme
+        join tbl_filme_genero on tbl_filme.id = tbl_filme_genero.id_filme 
+        join tbl_genero on tbl_genero.genero_id = tbl_filme_genero.id_genero
+        where tbl_genero.genero_id = ${idGenero};
+        `
+        let result = await prisma.$queryRawUnsafe(sql)
 
         // Validaçaõ para identificar se o retorno do banco é um array (vazio ou com dados)
         if(Array.isArray(result))
@@ -113,8 +108,7 @@ const getSelectFilmsByIdGenre = async function(idGenero){
         
 
     } catch (error) {
-        // Logar o erro completo aqui é crucial para debugar o erro 500!
-        console.error("Erro no DAO/Model ao buscar filmes por gênero:", error); 
+        console.log(error)
         return false
     }
 }
@@ -164,13 +158,9 @@ const setInsertFilmsGenres = async function(filmeGenero){
 //Atualiza um genero existente no BD filtrando pelo ID
 const setUpdateFilmsGenres = async function(filmeGenero){
     try {
-
-        let sql =   `
-                    UPDATE tbl_filme_genero set
-                        id_filme = ${filmeGenero.idFilme},
-                        id_genero = ${filmeGenero.idGenero}
-                    WHERE id = ${filmeGenero.id}
-                    `
+ 
+        let sql = `update tbl_filme_genero set id_filme = ${filmeGenero.id_filme}, id_filme = ${filmeGenero.id_filme} where id = ${filmeGenero.id}`
+                    
 
         let result = await prisma.$executeRawUnsafe(sql)
 
@@ -181,6 +171,7 @@ const setUpdateFilmsGenres = async function(filmeGenero){
         }
         
     } catch (error) {
+        console.log(error)
         return false
     }
 }
