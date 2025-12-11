@@ -121,7 +121,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\25132769\\Desktop\\b\\BACK-BANCO-DE-DADOS\\generated\\prisma",
+      "value": "/workspaces/BACK-BANCO-DE-DADOS/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -130,12 +130,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-1.1.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\25132769\\Desktop\\b\\BACK-BANCO-DE-DADOS\\prisma\\schema.prisma",
+    "sourceFilePath": "/workspaces/BACK-BANCO-DE-DADOS/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -149,6 +149,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {

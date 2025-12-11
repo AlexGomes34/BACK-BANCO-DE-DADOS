@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 // Cria um objeto especialista no formato JSON para receber os dados do BODY
 const bodyParserJson = bodyParser.json()
 
-const controllerFilmeGenero = require('../controller/filme_genero/controller_filme_genero.js')
+const controllerFilmeGenero = require('../controller/filme/controller_filme_genero.js')
 
 // Instancia na classe do express
 const router = express.Router() // Usamos express.Router() para modularizar as rotas

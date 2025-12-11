@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const bodyParserJson = bodyParser.json()
 
 // Importa o Controller do relacionamento Filme-Ator
-const controllerFilmeAtor = require('../controller/filme_ator/controller_filme_ator.js')
+const controllerFilmeAtor = require('../controller/filme/controller_filme_ator.js')
 
 // Instancia na classe do express
 const router = express.Router() // Usamos express.Router() para modularizar as rotas
