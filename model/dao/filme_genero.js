@@ -83,19 +83,29 @@ const getSelectGenresByIdFilm = async function(idFilme){
     
 }
 
-//Retorna os filmes Filtrando pelo ID do genero do BD
+// Retorna os filmes Filtrando pelo ID do genero do BD
 const getSelectFilmsByIdGenre = async function(idGenero){
     try {
-        //Script SQL
-        let sql = `select tbl_filme.id, tbl_filme.nome from tbl_filme
-         inner join tbl_filme_genero on tbl_filme.id = tbl_filme_genero.id_filme 
-         inner join tbl_genero on tbl_genero.id = tbl_filme_genero.id_genero
-        where tbl_genero.id = ${idGenero}`
+        
+        // 1. Usar $queryRaw e `Prisma.sql` para segurança e tratamento de variáveis.
+        // Assumindo que você importou o Prisma (ex: import { Prisma } from '@prisma/client')
+        const { Prisma } = require('@prisma/client'); // Inclua se necessário
 
-        //Executa no BD o script SQL
-        let result = await prisma.$queryRawUnsafe(sql)
+        let result = await prisma.$queryRaw(Prisma.sql`
+            SELECT 
+                tbl_filme.id, 
+                tbl_filme.nome 
+            FROM 
+                tbl_filme
+            INNER JOIN 
+                tbl_filme_genero ON tbl_filme.id = tbl_filme_genero.id_filme 
+            INNER JOIN 
+                tbl_genero ON tbl_genero.id = tbl_filme_genero.id_genero
+            WHERE 
+                tbl_genero.id = ${idGenero}
+        `);
 
-        //Validaçaõ para identificar se o retorno do banco é um array (vazio ou com dados)
+        // Validaçaõ para identificar se o retorno do banco é um array (vazio ou com dados)
         if(Array.isArray(result))
             return result
         else
@@ -103,9 +113,10 @@ const getSelectFilmsByIdGenre = async function(idGenero){
         
 
     } catch (error) {
+        // Logar o erro completo aqui é crucial para debugar o erro 500!
+        console.error("Erro no DAO/Model ao buscar filmes por gênero:", error); 
         return false
     }
-    
 }
 
 //Retorna o Ultimo ID a ser Adicionado no BD
