@@ -166,6 +166,7 @@ const setUpdateFilmsActors = async function(filmeAtor){
         }
         
     } catch (error) {
+        console.log(error)
         return false
     }
 }
