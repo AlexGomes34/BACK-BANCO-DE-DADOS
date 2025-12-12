@@ -149,13 +149,10 @@ const setInsertFilmsDirectors = async function(filmeDiretor){
 }
 
 //Atualiza um relacionamento filmeDiretor existente no BD filtrando pelo ID
-const setUpdateFilmsDirectors = async function(filmeAtor){
+const setUpdateFilmsDirectors = async function(filmeDiretor){
     try {
         let sql =   `
-                    UPDATE tbl_filme_diretor set
-                        id_filme = ${filmeDiretor.idFilme},
-                        id_diretor = ${filmeDiretor.idDiretor}
-                    WHERE id = ${filmeDiretor.id}
+                        update tbl_filme_diretor set id_filme = ${filmeDiretor.id_filme}, id_diretor = ${filmeDiretor.id_diretor} where id = ${filmeDiretor.id}
                     `
 
         let result = await prisma.$executeRawUnsafe(sql)
