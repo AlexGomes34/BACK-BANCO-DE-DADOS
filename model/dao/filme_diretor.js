@@ -61,8 +61,8 @@ const getSelectDirectorsByIdFilm = async function(idFilme){
                       tbl_diretor.diretor_id, 
                       tbl_diretor.nome
                    from tbl_filme
-                   inner join tbl_filme_diretor on tbl_filme.id = tbl_filme_diretor.id_filme 
-                   inner join tbl_diretor on tbl_diretor.diretor_id = tbl_filme_diretor.diretor_id
+                   join tbl_filme_diretor on tbl_filme.id = tbl_filme_diretor.id_filme 
+                   join tbl_diretor on tbl_diretor.diretor_id = tbl_filme_diretor.id_diretor
                    where tbl_filme.id = ${idFilme}`
 
         //Executa no BD o script SQL
@@ -75,6 +75,7 @@ const getSelectDirectorsByIdFilm = async function(idFilme){
             return false
         
     } catch (error) {
+        console.log(error)
         return false
     }
 }
