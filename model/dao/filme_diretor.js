@@ -129,7 +129,7 @@ const getSelectLastId = async function(){
 }
 
 //Insere um novo relacionamento filmeDiretor no BD
-const setInsertFilmsDirectors = async function(filmeAtor){
+const setInsertFilmsDirectors = async function(filmeDiretor){
     try {
         let sql =   `
                     INSERT INTO tbl_filme_diretor (id_filme, id_diretor)
