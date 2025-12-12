@@ -33,32 +33,23 @@ const getSelectAllFilmsDirectors = async function(){
     }
 }
 
-// Retorna um filmeDiretor filtrando pelo ID do BD
+//Retorna um filmeDiretor filtrando pelo ID do BD
 const getSelectByIdFilmDirector = async function(id){
     try {
-        // CONDIÇÃO 1: Garanta que o ID é um número
-        const idNumerico = Number(id); 
-        if (isNaN(idNumerico) || idNumerico <= 0) {
-            return false; // Retorna se o ID for inválido
-        }
-        
-        // Script SQL usando $queryRaw para segurança
-        // A sintaxe é: $queryRaw`SELECT * FROM sua_tabela WHERE campo = ${valor}`
-        let result = await prisma.$queryRaw`
-            SELECT * FROM tbl_filme_diretor WHERE id = ${idNumerico}
-        `;
+        //Script SQL
+        let sql = `select * from tbl_filme_diretor where id = ${id}`
 
-        // O Prisma geralmente retorna um array (vazio ou com dados)
-        if(Array.isArray(result) && result.length > 0)
-            // Se você espera apenas um objeto, retorne o primeiro
-            return result[0]; 
+        //Executa no BD o script SQL
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        //Validação para identificar se o retorno do banco é um array (vazio ou com dados)
+        if(Array.isArray(result))
+            return result
         else
-            return false;
-            
+            return false
+        
     } catch (error) {
-        // Adicione um console.error para ver o erro real do Prisma/Node
-        console.error("Erro no getSelectByIdFilmDirector:", error); 
-        return false;
+        return false
     }
 }
 
