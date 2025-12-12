@@ -43,12 +43,13 @@ const getSelectByIdFilmDirector = async function(id){
         let result = await prisma.$queryRawUnsafe(sql)
 
         //Validação para identificar se o retorno do banco é um array (vazio ou com dados)
-        if (result)
+        if(Array.isArray(result))
             return result
         else
             return false
         
     } catch (error) {
+        console.log(error)
         return false
     }
 }
