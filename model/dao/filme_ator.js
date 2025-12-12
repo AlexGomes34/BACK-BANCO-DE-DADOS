@@ -58,12 +58,12 @@ const getSelectActorsByIdFilm = async function(idFilme){
     try {
         //Script SQL
         let sql = `select 
-                      tbl_ator.ator_id, 
-                      tbl_ator.nome
-                   from tbl_filme
-                   inner join tbl_filme_ator on tbl_filme.id = tbl_filme_ator.id_filme 
-                   inner join tbl_ator on tbl_ator.ator_id = tbl_filme_ator.ator_id
-                   where tbl_filme.id = ${idFilme}`
+	                tbl_ator.ator_id, 
+	                tbl_ator.nome
+	                from tbl_filme
+		                join tbl_filme_ator on tbl_filme.id = tbl_filme_ator.id_filme 
+		                join tbl_ator on tbl_ator.ator_id = tbl_filme_ator.id_ator
+	                where tbl_filme.id = ${idFilme};`
 
         //Executa no BD o script SQL
         let result = await prisma.$queryRawUnsafe(sql)
